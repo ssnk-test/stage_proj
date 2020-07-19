@@ -1,0 +1,21 @@
+version: '3.7'
+services:
+  db:
+    image: postgres:10.1-alpine
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - ./stickers/:/var/lib/postgresql/data/
+
+  web:
+    build: goods/stickers
+    command: python manage.py runserver 0.0.0.0:8000
+
+    ports:
+      - 8000:8000
+    depends_on:
+      - db
+volumes:
+  stickers:
