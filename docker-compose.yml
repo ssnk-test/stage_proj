@@ -7,11 +7,16 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - .:/var/lib/postgresql/data/
+      - /var/lib/postgresql/data/
 
   web_service:
     build: goods/
-    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    command: bash -c "pip install -r ./goods/requirements.txt &&
+                      python ./goods/manage.py migrate &&
+                      python ./goods/manage.py runserver 0.0.0.0:8000"
+
+    volumes:
+      - .:/code/
 
     ports:
       - 8000:8000
