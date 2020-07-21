@@ -1,0 +1,54 @@
+API
+
+получить список всех объявлений + фильтрация
+url:    /items/
+метод:  GET
+body:   {"low_date": low_date,"high_date":high_date ,"low_price":low_price ,"high_price":high_price , "tags": ["tag1","tag2"]}
+
+        параметры фильтрации
+        low_date - начальная дата,
+        high_date - конечная дата
+        low_price - минимальная цена
+        high_price  - максимальная цена
+        "tag1","tag2" - теги
+
+получить информацию по объявлению с увеличением счетчика просмотров
+url:    /items/{id}/
+метод:  GET
+        параметры
+        id - id объявления
+
+получить информацию по объявлению без увеличения счетчика просмотров
+url:    /items/{id}/?service_view=value
+метод:  GET
+        параметры
+        id - id объявления
+        value - любое значение
+
+создать объявление
+url:    /items/{id}/
+метод:  POST
+body:   {"head": head, "body": body,"tag":  tags,"price": price}
+        head - название
+        body -  описание
+        tags - теги(строка с тэгами через запятую - "tag3,tag5")
+        price - цена
+
+обновить объявление
+url:    /items/{id}/
+метод:  PUT
+body:   {"head": head, "body": body,"tag":  tags,"price": price}
+        head - название
+        body -  описание
+        tags - теги(строка с тэгами через запятую - "tag3,tag5")
+        price - цена
+
+удалить объявление
+url:    /items/{id}/
+метод:  DELETE
+        параметры
+        id - id объявления
+
+показать список тэгов
+url:    /tags/
+метод:  GET

@@ -7,11 +7,11 @@ services:
       - POSTGRES_USER=postgres
       - POSTGRES_PASSWORD=postgres
     volumes:
-      - ./stickers/:/var/lib/postgresql/data/
+      - .:/var/lib/postgresql/data/
 
-  web:
-    build: goods/stickers
-    command: python manage.py runserver 0.0.0.0:8000
+  web_service:
+    build: goods/
+    command: bash -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
 
     ports:
       - 8000:8000

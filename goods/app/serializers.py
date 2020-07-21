@@ -1,9 +1,13 @@
 from rest_framework import serializers
-from .models import Sticker
+from .models import Sticker, Tag
 
-class StickerSerializer(serializers.Serializer):
-    name = serializers.CharField(max_length=255)
-    text = serializers.CharField()
 
-    def create(self, validated_data):
-        return Sticker.objects.create(**validated_data)
+class StickerSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Sticker
+        fields = "__all__"
+
+class TagSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Tag
+        fields = "__all__"

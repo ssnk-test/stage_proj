@@ -1,24 +1,49 @@
-from django.shortcuts import render
-
-# Create your views here.
-
-from django.http import HttpResponse
-from rest_framework.response import Response
-from rest_framework.views import APIView
-from .models import Sticker
-from .serializers import StickerSerializer
+from rest_framework import generics
+from django.shortcuts import get_object_or_404
+from django.db.models import F
+from .models import Sticker, Tag
+from .serializers import StickerSerializer, TagSerializer
 
 
-class StickerView(APIView):
-    def get(self, request):
-        stickers = Sticker.objects.all()
-        serializer = StickerSerializer(stickers, many=True)
-        return Response({"articles": serializer.data})
+class StickerList(generics.ListCreateAPIView):
+    queryset = Sticker.objects.all()
+    serializer_class = StickerSerializer
 
-    def post(self, request):
-        sticker = request.data.get('sticker')
-        # Create an article from the above data
-        serializer = StickerSerializer(data=sticker)
-        if serializer.is_valid(raise_exception=True):
-            sticker_saved = serializer.save()
-        return Response({"success": "created successfully"})
+    def post(self, request, *args, **kwargs):
+        if "tag" in request.data:
+            for item in request.data["tag"].split(","):
+                Tag.objects.get_or_create(text=item)  # Небезопасный?
+
+        return self.create(request, *args, **kwargs)
+
+    def get_queryset(self):
+        queryset = Sticker.objects.all()
+
+        params = self.request.data
+        if "tags" in params:
+            tags = params["tags"]
+            queryset = queryset.filter(tag__in=tags)
+        if "low_price" in params:
+            queryset = queryset.filter(price__lte=params["low_price"])
+        if "high_price" in params is not None:
+            queryset = queryset.filter(price__gte=params["low_price"])
+
+        return queryset
+
+
+class StickerDetail(generics.RetrieveUpdateDestroyAPIView):
+    queryset = Sticker.objects.all()
+    serializer_class = StickerSerializer
+    def get(self, request, *args, **kwargs):
+        print(request.query_params)
+        if not request.query_params.get("service_view", None):
+            sticker = get_object_or_404(self.queryset, pk=kwargs['pk'])
+            sticker.count_view = F("count_view") + 1
+            sticker.save()
+
+        return self.retrieve(request, *args, **kwargs)
+
+
+class TagList(generics.ListCreateAPIView):
+    queryset = Tag.objects.all()
+    serializer_class = TagSerializer
