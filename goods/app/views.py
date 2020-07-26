@@ -1,12 +1,12 @@
 from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from django.db.models import F
-from .models import Sticker, Tag
+from .models import Ad, Tag
 from .serializers import StickerSerializer, TagSerializer
 
 
 class StickerList(generics.ListCreateAPIView):
-    queryset = Sticker.objects.all()
+    queryset = Ad.objects.all()
     serializer_class = StickerSerializer
 
     def post(self, request, *args, **kwargs):
@@ -17,7 +17,7 @@ class StickerList(generics.ListCreateAPIView):
         return self.create(request, *args, **kwargs)
 
     def get_queryset(self):
-        queryset = Sticker.objects.all()
+        queryset = Ad.objects.all()
 
         params = self.request.data
         if "tags" in params:
@@ -32,7 +32,7 @@ class StickerList(generics.ListCreateAPIView):
 
 
 class StickerDetail(generics.RetrieveUpdateDestroyAPIView):
-    queryset = Sticker.objects.all()
+    queryset = Ad.objects.all()
     serializer_class = StickerSerializer
     def get(self, request, *args, **kwargs):
         print(request.query_params)
