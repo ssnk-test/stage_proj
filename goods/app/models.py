@@ -6,7 +6,7 @@ class Tag(models.Model):
     text = models.CharField(max_length=20)
 
 
-class Sticker(models.Model):
+class Ad(models.Model):
     head = models.CharField(max_length=50)
     body = models.TextField(max_length=255)
     tag = models.CharField(max_length=20)

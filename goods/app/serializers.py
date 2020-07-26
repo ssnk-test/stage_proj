@@ -1,10 +1,10 @@
 from rest_framework import serializers
-from .models import Sticker, Tag
+from .models import Ad, Tag
 
 
 class StickerSerializer(serializers.ModelSerializer):
     class Meta:
-        model = Sticker
+        model = Ad
         fields = "__all__"
 
 class TagSerializer(serializers.ModelSerializer):
