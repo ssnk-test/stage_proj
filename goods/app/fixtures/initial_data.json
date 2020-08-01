@@ -1,0 +1,45 @@
+[
+  {
+    "model": "app.Tag",
+    "pk": 1,
+    "fields": {
+      "text": "tag1"
+    }
+  },
+
+  {
+    "model": "app.Tag",
+    "pk": 2,
+    "fields": {
+      "text": "tag2"
+    }
+  },
+  {
+    "model": "app.Tag",
+    "pk": 3,
+    "fields": {
+      "text": "tag3"
+    }
+  },
+  {
+    "model": "app.Tag",
+    "pk": 4,
+    "fields": {
+      "text": "tag4"
+    }
+  },
+  {
+    "model": "app.Tag",
+    "pk": 5,
+    "fields": {
+      "text": "tag5"
+    }
+  },
+  {
+    "model": "app.Tag",
+    "pk": 6,
+    "fields": {
+      "text": "tag6"
+    }
+  }
+]

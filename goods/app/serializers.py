@@ -2,7 +2,7 @@ from rest_framework import serializers
 from .models import Ad, Tag
 
 
-class StickerSerializer(serializers.ModelSerializer):
+class AdSerializer(serializers.ModelSerializer):
     class Meta:
         model = Ad
         fields = "__all__"

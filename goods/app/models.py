@@ -9,7 +9,9 @@ class Tag(models.Model):
 class Ad(models.Model):
     head = models.CharField(max_length=50)
     body = models.TextField(max_length=255)
-    tag = models.CharField(max_length=20)
+    tag = models.ForeignKey(
+        Tag, related_name="tags", on_delete=models.CASCADE, default=0
+    )
     price = models.PositiveIntegerField()
     count_view = models.PositiveIntegerField(default=0)
     date_time = models.DateTimeField(auto_now_add=True)

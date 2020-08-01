@@ -2,19 +2,19 @@ from rest_framework import generics
 from django.shortcuts import get_object_or_404
 from django.db.models import F
 from .models import Ad, Tag
-from .serializers import StickerSerializer, TagSerializer
+from .serializers import AdSerializer, TagSerializer
 
 
-class StickerList(generics.ListCreateAPIView):
+class AdList(generics.ListCreateAPIView):
     queryset = Ad.objects.all()
-    serializer_class = StickerSerializer
+    serializer_class = AdSerializer
 
-    def post(self, request, *args, **kwargs):
-        if "tag" in request.data:
-            for item in request.data["tag"].split(","):
-                Tag.objects.get_or_create(text=item)  # Небезопасный?
-
-        return self.create(request, *args, **kwargs)
+    # def post(self, request, *args, **kwargs):
+    #     if "tag" in request.data:
+    #         for item in request.data["tag"].split(","):
+    #             Tag.objects.get_or_create(text=item)  # Небезопасный?
+    #
+    #     return self.create(request, *args, **kwargs)
 
     def get_queryset(self):
         queryset = Ad.objects.all()
@@ -31,9 +31,9 @@ class StickerList(generics.ListCreateAPIView):
         return queryset
 
 
-class StickerDetail(generics.RetrieveUpdateDestroyAPIView):
+class AdDetail(generics.RetrieveUpdateDestroyAPIView):
     queryset = Ad.objects.all()
-    serializer_class = StickerSerializer
+    serializer_class = AdSerializer
     def get(self, request, *args, **kwargs):
         print(request.query_params)
         if not request.query_params.get("service_view", None):

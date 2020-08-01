@@ -3,14 +3,14 @@ API
 получить список всех объявлений + фильтрация
 url:    /items/
 метод:  GET
-body:   {"low_date": low_date,"high_date":high_date ,"low_price":low_price ,"high_price":high_price , "tags": ["tag1","tag2"]}
+body:   {"low_date": low_date,"high_date":high_date ,"low_price":low_price ,"high_price":high_price , "tags": [id_tag1,id_tag2]}
 
         параметры фильтрации
         low_date - начальная дата,
         high_date - конечная дата
         low_price - минимальная цена
         high_price  - максимальная цена
-        "tag1","tag2" - теги
+        id_tag1,id_tag2 - id тэга из базы тэгов
 
 получить информацию по объявлению с увеличением счетчика просмотров
 url:    /items/{id}/

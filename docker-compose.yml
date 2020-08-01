@@ -13,14 +13,14 @@ services:
     build: goods/
     command: bash -c "pip install -r ./goods/requirements.txt &&
                       python ./goods/manage.py migrate &&
+                      python ./goods/manage.py loaddata initial_data.json &&
                       python ./goods/manage.py runserver 0.0.0.0:8000"
 
     volumes:
-      - .:/code/
+      - .:/code/ #for unix
+    #  - /home/docker/projects/:/code/ # for win7 with custom shared folder
 
     ports:
       - 8000:8000
     depends_on:
       - db
-volumes:
-  stickers:

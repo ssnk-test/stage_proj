@@ -2,7 +2,7 @@ from django.urls import path
 from django.conf.urls import url
 
 from . import views
-from .views import StickerList, StickerDetail,TagList
+from .views import AdList, AdDetail,TagList
 from django.conf.urls.static import static
 from django.conf import settings
 from drf_yasg import openapi
@@ -18,8 +18,8 @@ schema_view = get_schema_view(
 urlpatterns = [
     url(r"^swagger/$",schema_view.with_ui("swagger", cache_timeout=0),
         name="schema-swagger-ui",),
-    path('items/', StickerList.as_view()),
-    path('items/<int:pk>/', StickerDetail.as_view()),
+    path('items/', AdList.as_view()),
+    path('items/<int:pk>/', AdDetail.as_view()),
     path('tags/', TagList.as_view()),
 
     ] + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
