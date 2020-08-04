@@ -1,6 +1,7 @@
 version: '3.7'
 services:
   db:
+    container_name: goods_db
     image: postgres:10.1-alpine
     environment:
       - POSTGRES_DB=postgres
@@ -9,7 +10,8 @@ services:
     volumes:
       - /var/lib/postgresql/data/
 
-  web_service:
+  goods_service:
+    container_name: goods_service
     build: goods/
     command: bash -c "pip install -r ./goods/requirements.txt &&
                       python ./goods/manage.py migrate &&
@@ -24,3 +26,40 @@ services:
       - 8000:8000
     depends_on:
       - db
+
+  db_user_service:
+    container_name: user_db
+    image: postgres:10.1-alpine
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - /var/lib/postgresql/data/
+
+  redis_db:
+    container_name: redis_db
+    image: 'bitnami/redis:latest'
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+      REDIS_HOST: redis_db
+    ports:
+      - "6379:6379"
+
+  user_service:
+    container_name: user_service
+    build: user_service/
+    command: bash -c "
+      cd user_service &&
+      alembic upgrade head &&
+      python main.py"
+
+    volumes:
+      - .:/user_service_code/ #for unix
+    #  - /home/docker/projects/:/user_service_code/ # for win7 with custom shared folder
+
+    ports:
+      - 8080:8080
+    depends_on:
+      - db_user_service
+      - redis_db
