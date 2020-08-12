@@ -19,8 +19,8 @@ services:
                       python ./goods/manage.py runserver 0.0.0.0:8000"
 
     volumes:
-      - .:/code/ #for unix
-    #  - /home/docker/projects/:/code/ # for win7 with custom shared folder
+    #  - .:/code/ #for unix
+      - /home/docker/projects/:/code/ # for win7 with custom shared folder
 
     ports:
       - 8000:8000
@@ -63,3 +63,52 @@ services:
     depends_on:
       - db_user_service
       - redis_db
+
+  email_service:
+    container_name: email_service
+    build: email_service/
+    environment:
+      - EMAIL_LOGIN:"ssnk@le-memese.com"
+      - EMAIL_PASS:"SjHT9qCnxUSXiQY7xtwybJRFVLUfE6336Rp"
+
+    command: bash -c "python -m venv /env && . /env/bin/activate &&
+      cd email_service &&
+      poetry install &&
+      /env/bin/alembic upgrade head &&
+      /env/bin/uvicorn --host 0.0.0.0 --port 8081 email_service.asgi:app --reload"
+
+    volumes:
+    #  - .:/email_service_code/ #for unix
+      - /home/docker/projects/:/src/ # for win7 with custom shared folder
+
+    ports:
+      - 8081:8081
+    depends_on:
+      - db_user_service
+
+
+  db_email_service:
+    container_name: db_email_service
+    image: postgres:10.1-alpine
+    environment:
+      - POSTGRES_DB=postgres
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+    volumes:
+      - /var/lib/postgresql/data/
+
+
+  rabbit:
+    container_name: rabbit
+    image: "rabbitmq:3-management"
+    hostname: rabbit
+    environment:
+      RABBITMQ_ERLANG_COOKIE: "TESTVOLUME"
+      RABBITMQ_DEFAULT_USER: "test"
+      RABBITMQ_DEFAULT_PASS: "test"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    volumes:
+      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
+      - ./rabbitmq/logs:/var/log/rabbitmq/log
