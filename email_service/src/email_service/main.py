@@ -1,9 +1,8 @@
 from fastapi import FastAPI
 from .models import db
-from  .config import config as app_config
+from .config import config as app_config
 
 from . import config
-
 
 import logging
 import os
@@ -13,6 +12,7 @@ from email_service.config import config as app_config2
 
 
 logger = logging.getLogger(__name__)
+
 
 def load_modules(app=None):
     for ep in entry_points()["email_service.modules"]:

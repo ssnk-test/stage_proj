@@ -3,8 +3,6 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 import json
 import aio_pika
-
-
 from ..models.templates import Templates
 
 router = APIRouter()
@@ -25,9 +23,9 @@ class TemplatesModel(BaseModel):
 
 
 @router.post("/templates")
-async def add_template(body: TemplatesModel ):
+async def add_template(body: TemplatesModel):
     r = await Templates.create(name=body.name, body=body.body)
-    return {"response":"ok"}
+    return {"response": "ok"}
 
 
 def init_app(app):

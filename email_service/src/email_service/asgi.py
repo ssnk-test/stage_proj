@@ -9,8 +9,6 @@ from . import config
 from email.message import EmailMessage
 import aiosmtplib
 
-
-
 app = get_app()
 
 
@@ -50,7 +48,6 @@ async def send_email(message: aio_pika.IncomingMessage):
             use_tls=True)
 
 
-
 async def consuming(loop):
     connection = await aio_pika.connect_robust(
         "amqp://test:test@rabbit/", loop=loop, port=5672,
@@ -72,17 +69,17 @@ async def consuming(loop):
     print("end consuming")
 
 
-async def pp():
-    print("tick")
-    asyncio.sleep(1000)
-
-async def testing(loop):
-
-    while True:
-        await pp()
-
-
-    print("end consuming")
+# async def pp():
+#     print("tick")
+#     asyncio.sleep(1000)
+#
+#
+# async def testing(loop):
+#
+#     while True:
+#         await pp()
+#
+#     print("end consuming")
 
 
 @app.on_event("startup")

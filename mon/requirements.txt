@@ -1,0 +1,7 @@
+celery
+celery-pool-asyncio
+gino[starlette]
+fastapi
+uvicorn
+alembic
+psycopg2

@@ -19,8 +19,8 @@ services:
                       python ./goods/manage.py runserver 0.0.0.0:8000"
 
     volumes:
-    #  - .:/code/ #for unix
-      - /home/docker/projects/:/code/ # for win7 with custom shared folder
+      - .:/code/ #for unix
+      # - /home/docker/projects/:/code/ # for win7 with custom shared folder
 
     ports:
       - 8000:8000
@@ -75,8 +75,8 @@ services:
       /env/bin/uvicorn --host 0.0.0.0 --port 8081 email_service.asgi:app --reload"
 
     volumes:
-    #  - .:/email_service_code/ #for unix
-      - /home/docker/projects/:/src/ # for win7 with custom shared folder
+      - .:/email_service_code/ #for unix
+      # - /home/docker/projects/:/src/ # for win7 with custom shared folder
 
     ports:
       - 8081:8081
@@ -110,20 +110,16 @@ services:
       - ./rabbitmq/logs:/var/log/rabbitmq/log
   mon_service:
     container_name: mon_service
-    build: mon_service/
+    build: mon/
 
-    command: bash -c "python -m venv /env && . /env/bin/activate &&
-      cd email_service &&
-      poetry install &&
-      /env/bin/alembic upgrade head &&
-      /env/bin/uvicorn --host 0.0.0.0 --port 8081 email_service.asgi:app --reload"
+    command: bash mon/start.sh #"celery worker -P celery_pool_asyncio:TaskPool -A mon.cel.tasks"
 
     volumes:
-      #  - .:/email_service_code/ #for unix
-      - /home/docker/projects/:/src/ # for win7 with custom shared folder
+      - .:/email_service_code/ #for unix
+      #- /home/docker/projects/:/mon_code/ # for win7 with custom shared folder
 
     ports:
-      - 8081:8081
+      - 8082:8082
     depends_on:
       - db_user_service
 
