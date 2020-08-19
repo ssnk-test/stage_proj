@@ -12,6 +12,7 @@ import aiohttp_session
 from aiohttp_session.redis_storage import RedisStorage
 
 
+
 # from aiohttp_security import SessionIdentityPolicy
 # from aiohttp_security import authorized_userid
 # from aiohttp_security import setup as setup_security
@@ -22,6 +23,7 @@ from aiohttp_session.redis_storage import RedisStorage
 # from aiohttpdemo_blog.db import init_db
 from app.routes import setup_routes
 # from aiohttpdemo_blog.settings import load_config, PACKAGE_NAME
+
 
 
 log = logging.getLogger(__name__)

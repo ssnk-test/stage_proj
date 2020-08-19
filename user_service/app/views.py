@@ -6,11 +6,13 @@ import json
 from datetime import datetime
 import sqlalchemy as sa
 from argon2 import PasswordHasher
-from .model import users
+from .model import Users
 from aiohttp_session import get_session, new_session
 from jose import jwt
 from functools import wraps
 import os
+
+import uuid
 
 
 def auth(f):
@@ -35,19 +37,22 @@ class RegView(web.View):
 
     async def post(self):
         body_dict = await self.request.json()
+        if not "username" in body_dict or \
+            not "password" in body_dict or \
+            not "email" in body_dict:
+
+            return web.json_response({"code":"400", "resp": "reg user fail"})
 
         argon2 = PasswordHasher()
         password = argon2.hash(body_dict["password"])
 
-        async with self.request.app["database_pool"].acquire() as conn:
-            query = users.insert().values(
-                username=body_dict["name"],
-                email=body_dict["email"],
-                password=password
-            )
-            await conn.fetch(query)
+        body_dict['uuid'] = str(uuid.uuid4())
+        body_dict['password'] = password
 
-        return web.json_response(await self.request.json())
+        async with self.request.app["database_pool"].acquire() as conn:
+            await conn.execute(sa.insert(Users).values(**body_dict))
+
+        return web.json_response({"code": "201", "resp": f"add user {body_dict['username']}"})
 
 
 class LogInView(web.View):
@@ -56,11 +61,11 @@ class LogInView(web.View):
         body_dict = await self.request.json()
 
         async with self.request.app["database_pool"].acquire() as conn:
-            resp = await conn.fetchrow(users.select().where(users.c.username == body_dict["name"]))
+            user = await conn.fetchrow(
+                sa.select([Users]).where(Users.username == body_dict['username']))
 
-            if resp is not None:
-                pass_crypt = resp["password"]
-
+            if user is not None:
+                pass_crypt = user["password"]
                 argon2 = PasswordHasher()
 
                 try:
@@ -70,12 +75,12 @@ class LogInView(web.View):
 
                 a_tocken = jwt.encode(
                     {
-                        "user": body_dict["name"]
+                        "user": body_dict['username']
                     },
                     "todo:implement to env")
                 r_tocken = jwt.encode(
                     {
-                        "user": body_dict["name"],
+                        "user": body_dict['username'],
                         "exp": datetime.now()
                     },
                     "todo:implement to env")
@@ -121,7 +126,8 @@ class UpdateView(web.View):
         # get user data
 
         async with self.request.app["database_pool"].acquire() as conn:
-            resp = await conn.fetchrow(users.select().where(users.c.username == a_tok_param["user"]))
+            resp = await conn.fetchrow(
+                sa.select([Users]).where(Users.username == a_tok_param['user']))
 
             data_dict = {}
             data_dict[0] = resp[0]
@@ -168,9 +174,10 @@ class InfoView(web.View):
         )
 
         async with self.request.app["database_pool"].acquire() as conn:
-            resp = await conn.fetchrow(users.select().where(users.c.username == a_tok_param["user"]))
+            resp = await conn.fetchrow(
+                sa.select([Users]).where(Users.username == a_tok_param['user']))
 
-        return web.json_response({"response":"ok","username":resp[0],"email":resp[1]})
+        return web.json_response({"response":"ok","username":resp['username'],"email":resp['email']})
 
 
 class RefreshView(web.View):

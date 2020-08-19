@@ -164,7 +164,7 @@ definitions:
   create_user:
     type: object
     properties:
-      name:
+      username:
         type: string
         format: string
         value: "user1"
