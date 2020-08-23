@@ -1,9 +1,9 @@
 from gino.ext.starlette import Gino
 
-from .. import config
+from mon.app_mon import config
 
 db = Gino(
-    dsn="postgresql://postgres:postgres@db_mon_service:5432/postgres",
+    dsn=config.DB_DSN,
     pool_min_size=config.DB_POOL_MIN_SIZE,
     pool_max_size=config.DB_POOL_MAX_SIZE,
     echo=config.DB_ECHO,

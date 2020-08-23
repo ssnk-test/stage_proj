@@ -1,4 +1,4 @@
-from . import db
+from mon.app_mon.models import db
 
 class Event(db.Model):
     __tablename__ = "events"
