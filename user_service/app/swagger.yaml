@@ -3,6 +3,12 @@ info:
 basePath: /
 schemes:
   - http
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
 paths:
   /registr:
     post:
@@ -43,12 +49,14 @@ paths:
       produces:
         - application/json
       parameters:
-        - in: body
-          name: body
-          description:
-          required: false
-          schema:
-            $ref: "#/definitions/logout"
+        - name: Authorization
+          description: refresh token id
+          type: string
+          in: header
+          required: true
+
+      security:
+        - bearerAuth: []
   /update:
     post:
       tags:
@@ -64,8 +72,13 @@ paths:
           required: false
           schema:
             $ref: "#/definitions/update"
+        - name: Authorization
+          description: refresh token id
+          type: string
+          in: header
+          required: true
   /userinfo:
-    post:
+    get:
       tags:
         - user_service
       summary: view user info
@@ -73,12 +86,11 @@ paths:
       produces:
         - application/json
       parameters:
-        - in: body
-          name: body
-          description:
-          required: false
-          schema:
-            $ref: "#/definitions/info"
+        - name: Authorization
+          description: refresh token id
+          type: string
+          in: header
+          required: true
   /refresh:
     post:
       tags:
@@ -94,7 +106,23 @@ paths:
           required: false
           schema:
             $ref: "#/definitions/refresh"
-
+        - name: Authorization
+          description: refresh token id
+          type: string
+          in: header
+          required: true
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+  petstore_auth:
+    type: oauth2
+    authorizationUrl: http://petstore.swagger.wordnik.com/api/oauth/dialog
+    flow: implicit
+    scopes:
+      write_pets: modify pets in your account
+      read_pets: read your pets
 definitions:
   User:
     type: object
@@ -177,7 +205,7 @@ definitions:
   login:
     type: object
     properties:
-      name:
+      username:
         type: string
         format: string
       password:
@@ -195,9 +223,6 @@ definitions:
       rtoken:
         type: string
         format: string
-      atoken:
-        type: string
-        format: string
   info:
     type: object
     properties:
@@ -207,16 +232,12 @@ definitions:
   update:
     type: object
     properties:
-      name:
+      username:
         type: string
         format: string
-        value: "user1"
       email:
         type: string
         format: string
       password:
-        type: string
-        format: string
-      atoken:
         type: string
         format: string
