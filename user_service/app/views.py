@@ -7,6 +7,7 @@ from jose import jwt
 import jose
 from functools import wraps
 import uuid
+from config import settings
 
 
 def auth(f):
@@ -27,7 +28,7 @@ def auth(f):
         try:
             access_token_jwt = jwt.decode(
                 access_token,
-                "todo:implement to env"
+                settings.jwt_phrase
             )
         except jose.exceptions.JWTError:
             return web.json_response({"response": "no valid atoken"})
@@ -94,14 +95,14 @@ class LogInView(web.View):
                         "exp": datetime.now() + timedelta(minutes=15),
                         "uuid": user["uuid"]
                     },
-                    "todo:implement to env")
+                    settings.jwt_phrase)
                 r_token = jwt.encode(
                     {
                         "username": body_dict['username'],
                         "exp": datetime.now() + timedelta(minutes=40),
                         "uuid": user["uuid"]
                     },
-                    "todo:implement to env")
+                    settings.jwt_phrase)
 
                 redis = self.request.app["redis_pool"]
                 await redis.set(user["uuid"], " ".join([a_token, r_token]))
@@ -173,7 +174,7 @@ class RefreshView(web.View):
         try:
             r_token_jwt = jwt.decode(
                 r_token,
-                "todo:implement to env"
+                settings.jwt_phrase
             )
         except jose.exceptions.JWTError:
             return web.json_response({"response": "no valid atoken"})
@@ -201,14 +202,14 @@ class RefreshView(web.View):
                 "exp": datetime.now() + timedelta(minutes=15),
                 "uuid": user_uuid
             },
-            "todo:implement to env")
+            settings.jwt_phrase)
         r_token = jwt.encode(
             {
                 "username": r_token_jwt['username'],
                 "exp": datetime.now() + timedelta(minutes=40),
                 "uuid": user_uuid
             },
-            "todo:implement to env")
+            settings.jwt_phrase)
 
         await redis.set(user_uuid, " ".join([a_token, r_token]))
         await redis.expire(user_uuid, 60 * 40)
