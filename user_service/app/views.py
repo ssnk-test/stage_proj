@@ -31,19 +31,19 @@ def auth(f):
                 settings.jwt_phrase
             )
         except jose.exceptions.JWTError:
-            return web.json_response({"response": "no valid atoken"})
+            return web.json_response({"response": "invalid auth token"})
 
         # get access token from redis
         redis = await inst.request.app["redis_pool"]
 
         if not await redis.exists(access_token_jwt["uuid"]):
-            return web.json_response({"response": "no valid atoken"})
+            return web.json_response({"response": "invalid auth token"})
 
         redis_row = await redis.get(access_token_jwt["uuid"])
         access_token_redis = redis_row.decode("utf-8").split(" ")[0]
 
         if access_token != access_token_redis:
-            return web.json_response({"response": "no valid atoken"})
+            return web.json_response({"response": "invalid auth token"})
 
         return await f(*args, access_token_jwt, **kwds)
 
@@ -160,7 +160,7 @@ class RefreshView(web.View):
         try:
             r_token = body_dict['rtoken']
         except KeyError:
-            return web.json_response({"response": "no rtoken"})
+            return web.json_response({"response": "no refresh token"})
 
         # get access token
         header_auth = self.request.headers["Authorization"]
@@ -177,23 +177,23 @@ class RefreshView(web.View):
                 settings.jwt_phrase
             )
         except jose.exceptions.JWTError:
-            return web.json_response({"response": "no valid atoken"})
+            return web.json_response({"response": "invalid auth token"})
 
         # get tokens from redis
         user_uuid = r_token_jwt["uuid"]
         if not await redis.exists(user_uuid):
-            return web.json_response({"response": "no valid tokens"})
+            return web.json_response({"response": "invalid auth,refresh tokens"})
         redis_row = await redis.get(user_uuid)
         a_token_redis, r_token_redis = redis_row.decode("utf-8").split(" ")
 
         # validate
         if r_token_redis != r_token and a_token_redis != a_token:
-            return web.json_response({"response": "no valid tokens"})
+            return web.json_response({"response": "invalid auth,refresh tokens"})
 
         # maybe hack? delete tokens
         if (r_token_redis != r_token) != (a_token_redis != a_token):
             await redis.delete(user_uuid)
-            return web.json_response({"response": "no valid tokens"})
+            return web.json_response({"response": "invalid auth,refresh tokens"})
 
         # create new tokens
         a_token = jwt.encode(
