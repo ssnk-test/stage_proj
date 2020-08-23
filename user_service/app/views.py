@@ -80,35 +80,35 @@ class LogInView(web.View):
             user = await conn.fetchrow(
                 sa.select([Users]).where(Users.username == body_dict['username']))
 
-            if user is not None:
-                pass_crypt = user["password"]
-                ph = argon.PasswordHasher()
+        if user is not None:
+            pass_crypt = user["password"]
+            ph = argon.PasswordHasher()
 
-                try:
-                    ph.verify(pass_crypt, body_dict["password"])
-                except argon.exceptions.VerifyMismatchError:
-                    return web.json_response({"resp": "wrong password"})
+            try:
+                ph.verify(pass_crypt, body_dict["password"])
+            except argon.exceptions.VerifyMismatchError:
+                return web.json_response({"resp": "wrong password"})
 
-                a_token = jwt.encode(
-                    {
-                        "username": body_dict['username'],
-                        "exp": datetime.now() + timedelta(minutes=15),
-                        "uuid": user["uuid"]
-                    },
-                    settings.jwt_phrase)
-                r_token = jwt.encode(
-                    {
-                        "username": body_dict['username'],
-                        "exp": datetime.now() + timedelta(minutes=40),
-                        "uuid": user["uuid"]
-                    },
-                    settings.jwt_phrase)
+            a_token = jwt.encode(
+                {
+                    "username": body_dict['username'],
+                    "exp": datetime.now() + timedelta(minutes=15),
+                    "uuid": user["uuid"]
+                },
+                settings.jwt_phrase)
+            r_token = jwt.encode(
+                {
+                    "username": body_dict['username'],
+                    "exp": datetime.now() + timedelta(minutes=40),
+                    "uuid": user["uuid"]
+                },
+                settings.jwt_phrase)
 
-                redis = self.request.app["redis_pool"]
-                await redis.set(user["uuid"], " ".join([a_token, r_token]))
-                await redis.expire(user["uuid"], 60 * 40)
+            redis = self.request.app["redis_pool"]
+            await redis.set(user["uuid"], " ".join([a_token, r_token]))
+            await redis.expire(user["uuid"], 60 * 40)
 
-                return web.json_response({"atoken": a_token, "rtoken": r_token})
+            return web.json_response({"atoken": a_token, "rtoken": r_token})
 
         return web.json_response({"resp": "login fail"})
 
