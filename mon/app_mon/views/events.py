@@ -1,12 +1,11 @@
 from fastapi import APIRouter
 from pydantic import BaseModel
-
-from ..models.event import Event
-
-from ...cel.tasks import write_event
-
 from typing import Optional
 from datetime import datetime
+
+from mon.app_mon.models.event import Event
+from mon.cel.tasks import write_event
+
 
 router = APIRouter()
 

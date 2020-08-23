@@ -1,9 +1,11 @@
+import sys
+sys.path = sys.path[:] + [".."]
+
 from fastapi import FastAPI
+from mon.app_mon.models import db
+from mon.app_mon.views.events import init_app
 
-from .models import db
-from .views.events import init_app
 
-from . import config
 def get_app():
     app = FastAPI(title="events")
     init_app(app)
