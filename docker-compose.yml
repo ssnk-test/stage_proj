@@ -55,8 +55,8 @@ services:
       python main.py"
 
     volumes:
-      - .:/user_service_code/ #for unix
-    #  - /home/docker/projects/:/user_service_code/ # for win7 with custom shared folder
+    #  - .:/user_service_code/ #for unix
+      - /home/docker/projects/:/user_service_code/ # for win7 with custom shared folder
 
     ports:
       - 8080:8080

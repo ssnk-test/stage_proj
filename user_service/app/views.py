@@ -19,7 +19,7 @@ def auth(f):
         # get access token
         header_auth = inst.request.headers["Authorization"]
 
-        if "Bearer" in header_auth:
+        if header_auth.startswith("Bearer"):
             access_token = header_auth.split(" ")[1]
         else:
             return web.json_response({"response": "no auth"})
@@ -137,7 +137,7 @@ class UpdateView(web.View):
         # update user info
         async with pool.acquire() as conn:
             query = sa.update(Users).where(Users.username == username).values(**body_dict)
-            await conn.fetchrow(query)
+            await conn.execute(query)
         return web.json_response({"resp": "update ok"})
 
 
