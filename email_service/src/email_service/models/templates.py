@@ -1,4 +1,4 @@
-from . import db
+from email_service.models import db
 
 
 class Templates(db.Model):

@@ -1,6 +1,6 @@
 from gino.ext.starlette import Gino
 
-from .. import config
+from email_service import config
 
 db = Gino(
     dsn="postgresql://postgres:postgres@db_email_service:5432/postgres",

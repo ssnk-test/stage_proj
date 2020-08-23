@@ -3,7 +3,7 @@ from pydantic import BaseModel
 from fastapi.responses import JSONResponse
 import json
 import aio_pika
-from ..models.templates import Templates
+from email_service.models.templates import Templates
 
 router = APIRouter()
 
