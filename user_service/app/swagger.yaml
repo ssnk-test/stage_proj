@@ -10,7 +10,7 @@ components:
       scheme: bearer
       bearerFormat: JWT    # optional, arbitrary value for documentation purposes
 paths:
-  /registr:
+  /register:
     post:
       tags:
         - user_service
