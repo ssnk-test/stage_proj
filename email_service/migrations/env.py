@@ -21,9 +21,8 @@ fileConfig(config.config_file_name)
 
 
 #from email_service.src.email_service.config import DB_DSN
-from email_service.main import db, load_modules
+from email_service.main import db
 
-load_modules()
 config.set_main_option("sqlalchemy.url", "postgresql://postgres:postgres@db_email_service:5432/postgres")
 target_metadata = db
 
