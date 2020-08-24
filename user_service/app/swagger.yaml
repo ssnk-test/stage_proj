@@ -1,0 +1,243 @@
+swagger: "2.0"
+info:
+basePath: /
+schemes:
+  - http
+components:
+  securitySchemes:
+    bearerAuth:            # arbitrary name for the security scheme
+      type: http
+      scheme: bearer
+      bearerFormat: JWT    # optional, arbitrary value for documentation purposes
+paths:
+  /register:
+    post:
+      tags:
+        - user_service
+      summary: Create user
+      description: "Create user"
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description:
+          required: false
+          schema:
+            $ref: "#/definitions/create_user"
+  /login:
+    post:
+      tags:
+        - user_service
+      summary: Login
+      description: "Login"
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description:
+          required: false
+          schema:
+            $ref: "#/definitions/login"
+  /logout:
+    post:
+      tags:
+        - user_service
+      summary: Logout
+      description: "Logout"
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          description: refresh token id
+          type: string
+          in: header
+          required: true
+
+      security:
+        - bearerAuth: []
+  /update:
+    post:
+      tags:
+        - user_service
+      summary: update user data
+      description: "update user data"
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description:
+          required: false
+          schema:
+            $ref: "#/definitions/update"
+        - name: Authorization
+          description: refresh token id
+          type: string
+          in: header
+          required: true
+  /userinfo:
+    get:
+      tags:
+        - user_service
+      summary: view user info
+      description: "view user info"
+      produces:
+        - application/json
+      parameters:
+        - name: Authorization
+          description: refresh token id
+          type: string
+          in: header
+          required: true
+  /refresh:
+    post:
+      tags:
+        - user_service
+      summary: update token
+      description: "update token"
+      produces:
+        - application/json
+      parameters:
+        - in: body
+          name: body
+          description:
+          required: false
+          schema:
+            $ref: "#/definitions/refresh"
+        - name: Authorization
+          description: refresh token id
+          type: string
+          in: header
+          required: true
+securityDefinitions:
+  api_key:
+    type: apiKey
+    name: api_key
+    in: header
+  petstore_auth:
+    type: oauth2
+    authorizationUrl: http://petstore.swagger.wordnik.com/api/oauth/dialog
+    flow: implicit
+    scopes:
+      write_pets: modify pets in your account
+      read_pets: read your pets
+definitions:
+  User:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      username:
+        type:
+          - "string"
+          - "null"
+      firstName:
+        type: string
+      lastName:
+        type: string
+      email:
+        type: string
+      password:
+        type: string
+      phone:
+        type: string
+      userStatus:
+        type: integer
+        format: int32
+        description: User Status
+  Category:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+  Pet:
+    type: object
+    required:
+      - name
+      - photoUrls
+    properties:
+      id:
+        type: integer
+        format: int64
+      category:
+        $ref: "#/definitions/Category"
+      name:
+        type: string
+        example: doggie
+      photoUrls:
+        type: array
+        items:
+          type: string
+      tags:
+        type: array
+        items:
+          $ref: "#/definitions/Tag"
+      status:
+        type: string
+        description: pet status in the store
+  Tag:
+    type: object
+    properties:
+      id:
+        type: integer
+        format: int64
+      name:
+        type: string
+  create_user:
+    type: object
+    properties:
+      username:
+        type: string
+        format: string
+        value: "user1"
+      email:
+        type: string
+        format: string
+      password:
+        type: string
+        format: string
+  login:
+    type: object
+    properties:
+      username:
+        type: string
+        format: string
+      password:
+        type: string
+        format: string
+  logout:
+    type: object
+    properties:
+      atoken:
+        type: string
+        format: string
+  refresh:
+    type: object
+    properties:
+      rtoken:
+        type: string
+        format: string
+  info:
+    type: object
+    properties:
+      atoken:
+        type: string
+        format: string
+  update:
+    type: object
+    properties:
+      username:
+        type: string
+        format: string
+      email:
+        type: string
+        format: string
+      password:
+        type: string
+        format: string
