@@ -132,3 +132,17 @@ services:
       - POSTGRES_PASSWORD=postgres
     volumes:
       - /var/lib/postgresql/data/
+  api:
+    container_name: api
+    build: api/
+
+    command: bash -c "poetry install && poetry run uvicorn api_app.asgi:app --reload --host 0.0.0.0 --port 8083"
+
+    volumes:
+      # - .:/api/ #for unix
+      - /home/docker/projects/api/:/api/ # for win7 with custom shared folder
+
+    ports:
+      - 8083:8083
+    depends_on:
+      - db_user_service
