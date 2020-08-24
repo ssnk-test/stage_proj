@@ -1,0 +1,26 @@
+[tool.poetry]
+name = "email_service"
+version = "0.1.0"
+description = ""
+authors = ["John Smith <john@example.com>"]
+
+[tool.poetry.dependencies]
+python = "^3.7"
+gino = {extras = ["starlette"], version = "^1.0.1"}
+fastapi = "^0.60.1"
+uvicorn = "^0.11.8"
+alembic = "^1.4.2"
+psycopg2 = "^2.8.5"
+asyncio = "^3.4.3"
+aio_pika = "^6.6.1"
+aiosmtplib = "^1.1.3"
+
+[tool.poetry.dev-dependencies]
+pytest = "^5.2"
+
+[tool.poetry.plugins."email_service.modules"]
+"templates" = "email_service.views.templates"
+[build-system]
+requires = ["poetry>=0.12"]
+build-backend = "poetry.masonry.api"
+
