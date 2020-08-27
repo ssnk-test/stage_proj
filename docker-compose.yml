@@ -12,6 +12,7 @@ services:
 
   goods_service:
     container_name: goods_service
+    hostname: goods_service
     build: goods/
     command: bash -c "pip install -r ./goods/requirements.txt &&
                       python ./goods/manage.py migrate &&
@@ -20,10 +21,8 @@ services:
 
     volumes:
       - .:/code/ #for unix
-      # - /home/docker/projects/:/code/ # for win7 with custom shared folder
+     # - /home/docker/projects/:/code/ # for win7 with custom shared folder
 
-    ports:
-      - 8000:8000
     depends_on:
       - db
 
@@ -55,11 +54,9 @@ services:
       python main.py"
 
     volumes:
-    #  - .:/user_service_code/ #for unix
-      - /home/docker/projects/:/user_service_code/ # for win7 with custom shared folder
+      - .:/user_service_code/ #for unix
+     # - /home/docker/projects/:/user_service_code/ # for win7 with custom shared folder
 
-    ports:
-      - 8080:8080
     depends_on:
       - db_user_service
       - redis_db
@@ -75,11 +72,10 @@ services:
       /env/bin/uvicorn --host 0.0.0.0 --port 8081 email_service.asgi:app --reload"
 
     volumes:
-      #- .:/email_service_code/ #for unix
-       - /home/docker/projects/:/src/ # for win7 with custom shared folder
+       - .:/email_service_code/ #for unix
+       #- /home/docker/projects/:/src/ # for win7 with custom shared folder
 
-    ports:
-      - 8081:8081
+
     depends_on:
       - db_user_service
 
@@ -112,14 +108,12 @@ services:
     container_name: mon_service
     build: mon/
 
-    command: bash mon/start.sh #"celery worker -P celery_pool_asyncio:TaskPool -A mon.cel.tasks"
+    command: bash start.sh #"celery worker -P celery_pool_asyncio:TaskPool -A mon.cel.tasks"
 
     volumes:
       - .:/email_service_code/ #for unix
-      #- /home/docker/projects/:/mon_code/ # for win7 with custom shared folder
+    # - /home/docker/projects/mon/:/mon_code/ # for win7 with custom shared folder
 
-    ports:
-      - 8082:8082
     depends_on:
       - db_user_service
 
@@ -139,10 +133,18 @@ services:
     command: bash -c "poetry install && poetry run uvicorn api_app.asgi:app --reload --host 0.0.0.0 --port 8083"
 
     volumes:
-      # - .:/api/ #for unix
-      - /home/docker/projects/api/:/api/ # for win7 with custom shared folder
+      - .:/api/ #for unix
+      #- /home/docker/projects/api/:/api/ # for win7 with custom shared folder
 
     ports:
       - 8083:8083
     depends_on:
       - db_user_service
+  api_redis:
+    container_name: api_redis
+    image: 'bitnami/redis:latest'
+    environment:
+      ALLOW_EMPTY_PASSWORD: "yes"
+      REDIS_HOST: redis_db
+    ports:
+      - "6380:6379"

@@ -1,6 +1,8 @@
 import aio_pika
 import asyncio
 from email.message import EmailMessage
+from email.mime.multipart import MIMEMultipart
+from email.mime.text import MIMEText
 import aiosmtplib
 
 from email_service.models.templates import Templates
@@ -30,11 +32,18 @@ async def send_email(message: aio_pika.IncomingMessage):
             Templates.name == data["template"]).gino.first()
 
         # create email
-        em = EmailMessage()
+        em = MIMEMultipart()
         em["From"] = data["from"]
         em["To"] = data["to"]
         em["Subject"] = data["sub"]
-        em.set_content(tmplt.body.format(**data))
+        a = tmplt.body.format(**data)
+
+        #plain_text_message = MIMEText("Sent via aiosmtplib", "plain", "utf-8")
+        html_message = MIMEText(f"{a}", "html", "utf-8"
+        )
+        #em.attach(plain_text_message)
+        em.attach(html_message)
+
 
         # send
         await aiosmtplib.send(

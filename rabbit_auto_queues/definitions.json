@@ -1,0 +1,11 @@
+{
+  "queues": [
+    {
+      "name": "send_mail",
+      "vhost": "/",
+      "durable": true,
+      "auto_delete": false,
+      "arguments": {}
+    }
+  ]
+}

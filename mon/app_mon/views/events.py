@@ -3,8 +3,8 @@ from pydantic import BaseModel
 from typing import Optional
 from datetime import datetime
 
-from mon.app_mon.models.event import Event
-from mon.cel.tasks import write_event
+from app_mon.models.event import Event
+from cel.tasks import write_event
 
 
 router = APIRouter()
@@ -23,7 +23,6 @@ async def get_events():
              "req_time": item.req_time,
              "res_time": item.res_time
              })
-    print(ev)
     return resp
 
 
@@ -31,8 +30,8 @@ class EventModel(BaseModel):
     service: str
     url: str
     status: str
-    req_time: Optional[datetime]
-    res_time: Optional[datetime]
+    req_time: str
+    res_time: str
 
 
 @router.post("/events")

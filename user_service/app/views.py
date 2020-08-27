@@ -127,7 +127,11 @@ class UpdateView(web.View):
         body_dict = await self.request.json()
         username = access_token_jwt["username"]
         pool = self.request.app["database_pool"]
-
+        a = body_dict
+        body_dict = dict()
+        for item in a.keys():
+            if a[item] is not None:
+                body_dict[item] = a[item]
         # gen password hash
         if "password" in body_dict:
             ph = argon.PasswordHasher()
@@ -149,7 +153,8 @@ class InfoView(web.View):
         async with pool.acquire() as conn:
             resp = await conn.fetchrow(
                 sa.select([Users]).where(Users.username == username))
-        return web.json_response({"response": "ok", "username": resp['username'], "email": resp['email']})
+        return web.json_response({"response": "ok", "username": resp['username'],
+                                  "email": resp['email'], 'uuid': resp['uuid']})
 
 
 class RefreshView(web.View):

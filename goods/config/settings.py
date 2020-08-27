@@ -26,6 +26,7 @@ SECRET_KEY = 'w5pm43o$(f=pz1mq#-l-241*bv-gs(+-d4b(s*j$l1p_5tdu^%'
 DEBUG = True
 
 ALLOWED_HOSTS = ['*']
+ALLOWED_PORTS = ['*']
 
 
 # Application definition
