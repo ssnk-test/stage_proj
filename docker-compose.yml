@@ -1,5 +1,18 @@
 version: '3.7'
 services:
+  goods_service:
+    container_name: goods_service
+    hostname: goods_service
+    build: goods/
+    command: bash -c "pip install -r ./goods/requirements.txt &&
+                      python ./goods/manage.py migrate &&
+                      python ./goods/manage.py loaddata initial_data.json &&
+                      python ./goods/manage.py runserver 0.0.0.0:8000"
+    volumes:
+      - .:/code/ #for unix
+     # - /home/docker/projects/:/code/ # for win7 with custom shared folder
+    depends_on:
+      - db
   db:
     container_name: goods_db
     image: postgres:10.1-alpine
@@ -10,21 +23,6 @@ services:
     volumes:
       - /var/lib/postgresql/data/
 
-  goods_service:
-    container_name: goods_service
-    hostname: goods_service
-    build: goods/
-    command: bash -c "pip install -r ./goods/requirements.txt &&
-                      python ./goods/manage.py migrate &&
-                      python ./goods/manage.py loaddata initial_data.json &&
-                      python ./goods/manage.py runserver 0.0.0.0:8000"
-
-    volumes:
-      - .:/code/ #for unix
-     # - /home/docker/projects/:/code/ # for win7 with custom shared folder
-
-    depends_on:
-      - db
 
   db_user_service:
     container_name: user_db
@@ -52,7 +50,6 @@ services:
       cd user_service &&
       alembic upgrade head &&
       python main.py"
-
     volumes:
       - .:/user_service_code/ #for unix
      # - /home/docker/projects/:/user_service_code/ # for win7 with custom shared folder
@@ -91,19 +88,14 @@ services:
       - /var/lib/postgresql/data/
 
   rabbit:
-    container_name: rabbit
-    image: "rabbitmq:3-management"
-    hostname: rabbit
-    environment:
-      RABBITMQ_ERLANG_COOKIE: "TESTVOLUME"
-      RABBITMQ_DEFAULT_USER: "test"
-      RABBITMQ_DEFAULT_PASS: "test"
-    ports:
-      - "15672:15672"
-      - "5672:5672"
-    volumes:
-      - ./rabbitmq/data:/var/lib/rabbitmq/mnesia/rabbit@my-rabbit
-      - ./rabbitmq/logs:/var/log/rabbitmq/log
+    rabbit:
+      container_name: rabbit
+      build: rabbit_auto_queues
+      hostname: rabbit
+      ports:
+        - "15672:15672"
+        - "5672:5672"
+
   mon_service:
     container_name: mon_service
     build: mon/
