@@ -4,9 +4,7 @@ name: CI
 
 # Controls when the action will run. Triggers the workflow on push or pull request
 # events but only for the master branch
-on:                             # действие, по которому запускается скрипт
-  schedule:                     # в данном случае, это выполнение по таймеру
-    - cron: '0 5-20/2 * * *'    # 'каждый день каждые 2 часа в часы с 5 по 20 по UTC+0', то есть в 5, 7, 9, 11, 13, 15, 17, 19 по UTC+0
+
 # A workflow run is made up of one or more jobs that can run sequentially or in parallel
 jobs:
   # This workflow contains a single job called "build"
