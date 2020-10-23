@@ -22,8 +22,8 @@ def upgrade():
     sa.Column('service', sa.Unicode(), nullable=True),
     sa.Column('url', sa.Unicode(), nullable=True),
     sa.Column('status', sa.Unicode(), nullable=True),
-    sa.Column('req_time', sa.DateTime(), nullable=True),
-    sa.Column('res_time', sa.DateTime(), nullable=True)
+    sa.Column('req_time', sa.Unicode(), nullable=True),
+    sa.Column('res_time', sa.Unicode(), nullable=True)
     )
     # ### end Alembic commands ###
 

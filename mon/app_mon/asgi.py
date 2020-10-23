@@ -1,4 +1,4 @@
-from mon.app_mon.main import get_app
+from app_mon.main import get_app
 
 app = get_app()
 

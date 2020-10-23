@@ -1,6 +1,6 @@
 from gino.ext.starlette import Gino
 
-from mon.app_mon import config
+from app_mon import config
 
 db = Gino(
     dsn=config.DB_DSN,

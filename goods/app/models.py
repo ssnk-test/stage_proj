@@ -7,6 +7,7 @@ class Tag(models.Model):
 
 
 class Ad(models.Model):
+    user_uuid = models.TextField(max_length=255)
     head = models.CharField(max_length=50)
     body = models.TextField(max_length=255)
     tag = models.ForeignKey(

@@ -1,8 +1,8 @@
 from __future__ import absolute_import, unicode_literals
 
-from mon.cel.celer import app
+from cel.celer import app
 from gino import create_engine
-from mon.app_mon.models.event import Event
+from app_mon.models.event import Event
 
 
 @app.task(name="tasks.write_event")
