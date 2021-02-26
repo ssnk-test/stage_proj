@@ -1,4 +1,4 @@
-aiohttp == 3.5.4
+aiohttp == 3.7.4
 aiohttp-swagger == 1.0.15
 alembic == 1.4.2
 psycopg2-binary == 2.8.5
